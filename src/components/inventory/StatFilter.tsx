@@ -8,17 +8,20 @@ import { StatValue } from '@/lib/types/inventory';
 export default function StatFilter() {
   const { statFilters, setStatFilters, selectedSlot, selectedItem } = useInventoryStore();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
-  const filteredStats = searchTerm.length > 0
+  const filteredStats = isFocused
     ? stats.filter(stat => 
+        !searchTerm || 
         stat.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      ).filter(stat => !statFilters.find(s => s.stat === stat))
     : [];
 
   const addStat = (stat: string) => {
     if (!statFilters.find(s => s.stat === stat)) {
       setStatFilters([...statFilters, { stat, value: '' }]);
       setSearchTerm('');
+      setIsFocused(false);
     }
   };
 
@@ -72,15 +75,17 @@ export default function StatFilter() {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           placeholder="Add stat filter..."
           className="w-full bg-gray-800 text-white px-3 py-1.5 rounded border border-gray-700 focus:outline-none focus:border-blue-500"
         />
 
-        {searchTerm && (
+        {isFocused && (
           <div className="mt-2 max-h-60 overflow-y-auto">
-            {filteredStats.map(stat => (
+            {filteredStats.map((stat, index) => (
               <button
-                key={stat}
+                key={`${stat}-${index}`}
                 onClick={() => addStat(stat)}
                 className="w-full text-left text-sm text-gray-300 hover:bg-gray-800 p-2 rounded"
               >

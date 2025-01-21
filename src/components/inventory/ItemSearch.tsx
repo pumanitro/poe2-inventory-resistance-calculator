@@ -8,11 +8,12 @@ import { useInventoryStore } from '@/lib/store/inventoryStore';
 export default function ItemSearch() {
   const { selectedItem, setSelectedItem } = useInventoryStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
-  const searchResults = searchTerm.length > 0 && isSearching
+  const searchResults = isFocused
     ? items.result.flatMap(category => 
         category.entries.filter(item => 
+          !searchTerm || 
           item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (item.text?.toLowerCase() || '').includes(searchTerm.toLowerCase())
         )
@@ -22,13 +23,13 @@ export default function ItemSearch() {
   const handleSelectItem = (item: Item) => {
     setSelectedItem(item.text || item.type);
     setSearchTerm(item.text || item.type);
-    setIsSearching(false);
+    setIsFocused(false);
   };
 
   const clearSelection = () => {
     setSelectedItem(null);
     setSearchTerm('');
-    setIsSearching(false);
+    setIsFocused(false);
   };
 
   return (
@@ -37,11 +38,9 @@ export default function ItemSearch() {
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setIsSearching(true);
-          }}
-          onFocus={() => setIsSearching(true)}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           placeholder="Type to search items... (e.g. 'Ring', 'Amulet')"
           className={`w-full px-4 py-2 bg-gray-800/90 text-white border ${
             !selectedItem ? 'border-gray-600' : 'border-yellow-400'
@@ -57,7 +56,7 @@ export default function ItemSearch() {
         )}
       </div>
 
-      {searchResults.length > 0 && (
+      {isFocused && (
         <div className="bg-gray-800/95 backdrop-blur-sm border-x border-b border-gray-600 rounded-b-lg p-2 max-h-60 overflow-y-auto">
           <ul className="space-y-1">
             {searchResults.map((item, index) => (

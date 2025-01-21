@@ -2,22 +2,28 @@ import Image from "next/image";
 import InventoryGrid from "@/components/inventory/InventoryGrid";
 import ItemSearch from "@/components/inventory/ItemSearch";
 import StatFilter from "@/components/inventory/StatFilter";
+import SubmitButton from "@/components/inventory/SubmitButton";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-900">
-      <div className="relative">
-        <Image
-          src="/images/inventoryBackground.webp"
-          alt="Inventory Background"
-          width={800}  // Adjust these dimensions based on your actual image
-          height={600} // Adjust these dimensions based on your actual image
-          priority
-          className="rounded-lg shadow-lg"
-        />
-        <InventoryGrid />
-        <ItemSearch />
-        <StatFilter />
+    <main className="flex min-h-screen items-center justify-center p-24 bg-gray-900">
+      <div className="flex gap-8">
+        <div className="flex flex-col gap-4">
+          <ItemSearch />
+          <StatFilter />
+          <SubmitButton />
+        </div>
+        <div className="relative">
+          <Image
+            src="/images/inventoryBackground.webp"
+            alt="Inventory Background"
+            width={800}
+            height={600}
+            priority
+            className="rounded-lg shadow-lg"
+          />
+          <InventoryGrid />
+        </div>
       </div>
     </main>
   );

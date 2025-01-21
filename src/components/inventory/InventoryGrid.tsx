@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { InventorySection, InventorySectionType, EquipmentSlotType } from '@/lib/types/inventory';
+import { InventorySection, InventorySectionType, EquipmentSlotType, StatValue } from '@/lib/types/inventory';
+import { useInventoryStore } from '@/lib/store/inventoryStore';
 
 const defaultSections: InventorySection[] = [
   {
@@ -110,19 +111,34 @@ const defaultSections: InventorySection[] = [
   }
 ];
 
+const ItemPreview = ({ name, stats }: { name: string; stats: StatValue[] }) => (
+  <div className="absolute inset-0 bg-gray-900/95 p-3 flex flex-col">
+    <div className="text-yellow-400 text-sm font-semibold border-b border-gray-700 pb-2">
+      {name}
+    </div>
+    <div className="mt-2 space-y-1 overflow-y-auto">
+      {stats.map((stat, i) => (
+        <div key={i} className="text-blue-300 text-xs flex items-baseline gap-1">
+          <span className="text-white">{stat.value}</span>
+          <span>{stat.stat.replace('#', '')}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export default function InventoryGrid() {
-  const [sections] = useState<InventorySection[]>(defaultSections);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const { selectedSlot, setSelectedSlot, previewItem } = useInventoryStore();
 
   return (
     <div className="absolute inset-0">
-      {sections.map((section) => (
+      {defaultSections.map((section) => (
         <div
           key={section.id}
-          className={`absolute border border-gray-400/30 cursor-pointer transition-colors hover:border-yellow-400/50 ${
-            activeSection === section.id
+          className={`absolute border cursor-pointer transition-colors ${
+            selectedSlot === section.id
               ? 'border-yellow-400/70'
-              : ''
+              : 'border-gray-400/30 hover:border-yellow-400/50'
           }`}
           style={{
             left: `${section.position.x}px`,
@@ -130,11 +146,15 @@ export default function InventoryGrid() {
             width: `${section.width}px`,
             height: `${section.height}px`,
           }}
-          onClick={() => setActiveSection(section.id)}
+          onClick={() => setSelectedSlot(section.id)}
         >
           <div className="absolute -top-6 left-0 text-white/50 text-xs font-semibold">
             {section.name}
           </div>
+          
+          {previewItem && previewItem.slot === section.id && (
+            <ItemPreview name={previewItem.name} stats={previewItem.stats} />
+          )}
         </div>
       ))}
     </div>

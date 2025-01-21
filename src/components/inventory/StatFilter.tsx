@@ -2,47 +2,53 @@
 
 import { useState } from 'react';
 import { stats } from '@/stats';
-
-interface StatValue {
-  stat: string;
-  value: string;
-}
+import { useInventoryStore } from '@/lib/store/inventoryStore';
+import { StatValue } from '@/lib/types/inventory';
 
 export default function StatFilter() {
-  const [selectedStats, setSelectedStats] = useState<StatValue[]>([]);
+  const { statFilters, setStatFilters, selectedSlot, selectedItem } = useInventoryStore();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredStats = stats.filter(stat => 
-    stat.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStats = searchTerm.length > 0
+    ? stats.filter(stat => 
+        stat.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   const addStat = (stat: string) => {
-    if (!selectedStats.find(s => s.stat === stat)) {
-      setSelectedStats([...selectedStats, { stat, value: '' }]);
+    if (!statFilters.find(s => s.stat === stat)) {
+      setStatFilters([...statFilters, { stat, value: '' }]);
+      setSearchTerm('');
     }
   };
 
   const removeStat = (stat: string) => {
-    setSelectedStats(selectedStats.filter(s => s.stat !== stat));
+    setStatFilters(statFilters.filter(s => s.stat !== stat));
   };
 
   const updateValue = (stat: string, value: string) => {
-    setSelectedStats(selectedStats.map(s => 
+    setStatFilters(statFilters.map(s => 
       s.stat === stat ? { ...s, value } : s
     ));
   };
 
+  const clearAll = () => {
+    setStatFilters([]);
+  };
+
   return (
-    <div className="absolute right-0 top-[-20px] w-80 bg-gray-900/95 border border-gray-700 rounded-lg">
+    <div className="w-80 bg-gray-900/95 border border-gray-700 rounded-lg">
       <div className="p-2 border-b border-gray-700 flex items-center">
         <span className="text-white font-semibold">Stat Filters</span>
-        <button className="ml-auto text-gray-400 hover:text-white">
-          <span className="sr-only">Clear all</span>
+        <button 
+          onClick={clearAll}
+          className="ml-auto text-gray-400 hover:text-white"
+        >
           ×
         </button>
       </div>
 
-      {selectedStats.map(({ stat, value }) => (
+      {statFilters.map(({ stat, value }) => (
         <div key={stat} className="p-2 border-b border-gray-700 flex items-center gap-2">
           <span className="text-white text-sm flex-1">{stat}</span>
           <input 

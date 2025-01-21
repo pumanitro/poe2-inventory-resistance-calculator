@@ -60,4 +60,9 @@ export enum EquipmentSlotType {
   CHARM_1 = 'CHARM_1',            // Bottom center left charm
   CHARM_2 = 'CHARM_2',            // Bottom center middle charm
   CHARM_3 = 'CHARM_3'             // Bottom center right charm
+}
+
+export interface StatValue {
+  stat: string;
+  value: string;
 } 

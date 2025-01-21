@@ -157,9 +157,9 @@ export default function InventoryGrid() {
       {defaultSections.map((section) => (
         <div
           key={section.id}
-          className={`absolute border cursor-pointer transition-colors ${
+          className={`absolute border cursor-pointer transition-all duration-200 ${
             selectedSlot === section.id
-              ? 'border-yellow-400/70'
+              ? 'border-yellow-400/70 z-50 scale-110 shadow-xl'
               : 'border-gray-400/30 hover:border-yellow-400/50'
           }`}
           style={{
@@ -167,10 +167,13 @@ export default function InventoryGrid() {
             top: `${section.position.y}px`,
             width: `${section.width}px`,
             height: `${section.height}px`,
+            transformOrigin: selectedSlot === section.id ? 'center center' : undefined,
           }}
           onClick={() => setSelectedSlot(section.id)}
         >
-          <div className="absolute -top-6 left-0 text-white/50 text-xs font-semibold">
+          <div className={`absolute -top-6 left-0 text-white/50 text-xs font-semibold transition-opacity ${
+            selectedSlot === section.id ? 'opacity-0' : ''
+          }`}>
             {section.name}
           </div>
           

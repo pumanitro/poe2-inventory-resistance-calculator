@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { items } from '@/items';
 import { Item } from '@/lib/types/items';
 import { useInventoryStore } from '@/lib/store/inventoryStore';
@@ -9,6 +9,12 @@ export default function ItemSearch() {
   const { selectedItem, setSelectedItem } = useInventoryStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (selectedItem) {
+      setSearchTerm(selectedItem);
+    }
+  }, [selectedItem]);
 
   const searchResults = isFocused
     ? items.result.flatMap(category => 

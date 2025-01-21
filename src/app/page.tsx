@@ -1,6 +1,7 @@
 import Image from "next/image";
 import InventoryGrid from "@/components/inventory/InventoryGrid";
 import ItemSearch from "@/components/inventory/ItemSearch";
+import StatFilter from "@/components/inventory/StatFilter";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         />
         <InventoryGrid />
         <ItemSearch />
+        <StatFilter />
       </div>
     </main>
   );

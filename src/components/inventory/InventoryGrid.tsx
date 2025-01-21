@@ -111,24 +111,46 @@ const defaultSections: InventorySection[] = [
   }
 ];
 
-const ItemPreview = ({ name, stats }: { name: string; stats: StatValue[] }) => (
-  <div className="absolute inset-0 bg-gray-900/95 p-3 flex flex-col">
-    <div className="text-yellow-400 text-sm font-semibold border-b border-gray-700 pb-2">
-      {name}
+const ItemPreview = ({ name, stats, slotId }: { name: string; stats: StatValue[]; slotId: string }) => {
+  const editItem = useInventoryStore(state => state.editItem);
+
+  return (
+    <div 
+      className="absolute inset-0 bg-gray-900/95 p-3 flex flex-col group"
+      onClick={(e) => {
+        e.stopPropagation();
+        editItem(slotId);
+      }}
+    >
+      <button 
+        className="absolute top-1 right-1 text-gray-500 hover:text-white opacity-0 group-hover:opacity-100"
+        onClick={(e) => {
+          e.stopPropagation();
+          useInventoryStore.getState().clearPreview(slotId);
+        }}
+      >
+        ×
+      </button>
+      <div className="text-yellow-400 text-sm font-semibold border-b border-gray-700 pb-2">
+        {name}
+      </div>
+      <div className="mt-2 space-y-1 overflow-y-auto">
+        {stats.map((stat, i) => (
+          <div key={i} className="text-blue-300 text-xs flex items-baseline gap-1">
+            <span className="text-white">{stat.value}</span>
+            <span>{stat.stat.replace('#', '')}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-auto pt-2 text-xs text-gray-400 opacity-0 group-hover:opacity-100">
+        Click to edit
+      </div>
     </div>
-    <div className="mt-2 space-y-1 overflow-y-auto">
-      {stats.map((stat, i) => (
-        <div key={i} className="text-blue-300 text-xs flex items-baseline gap-1">
-          <span className="text-white">{stat.value}</span>
-          <span>{stat.stat.replace('#', '')}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+  );
+};
 
 export default function InventoryGrid() {
-  const { selectedSlot, setSelectedSlot, previewItem } = useInventoryStore();
+  const { selectedSlot, setSelectedSlot, previewItems } = useInventoryStore();
 
   return (
     <div className="absolute inset-0">
@@ -152,8 +174,12 @@ export default function InventoryGrid() {
             {section.name}
           </div>
           
-          {previewItem && previewItem.slot === section.id && (
-            <ItemPreview name={previewItem.name} stats={previewItem.stats} />
+          {previewItems[section.id] && (
+            <ItemPreview 
+              name={previewItems[section.id].name} 
+              stats={previewItems[section.id].stats}
+              slotId={section.id}
+            />
           )}
         </div>
       ))}

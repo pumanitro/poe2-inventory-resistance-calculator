@@ -1,5 +1,6 @@
 import Image from "next/image";
 import InventoryGrid from "@/components/inventory/InventoryGrid";
+import ItemSearch from "@/components/inventory/ItemSearch";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
           className="rounded-lg shadow-lg"
         />
         <InventoryGrid />
+        <ItemSearch />
       </div>
     </main>
   );

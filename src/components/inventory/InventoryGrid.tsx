@@ -111,7 +111,7 @@ const defaultSections: InventorySection[] = [
   }
 ];
 
-const ItemPreview = ({ name, stats, slotId, mode }: { name: string; stats: StatValue[]; slotId: string; mode: 'own' | 'want' }) => {
+const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: StatValue[]; slotId: string; mode: 'own' | 'want' }) => {
   const editItem = useInventoryStore(state => state.editItem);
 
   const getBgColor = () => {
@@ -138,7 +138,7 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name: string; stats: StatV
         ×
       </button>
       <div className="text-yellow-400 text-sm font-semibold border-b border-gray-700 pb-2">
-        {name}
+        {name || '[ANY]'}
       </div>
       <div className="mt-2 space-y-1 overflow-y-auto">
         {stats.map((stat, i) => (

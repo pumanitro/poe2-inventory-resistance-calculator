@@ -3,18 +3,19 @@
 import { useInventoryStore } from '@/lib/store/inventoryStore';
 
 export default function SubmitButton() {
-  const { selectedSlot, selectedItem, submitItemRequest } = useInventoryStore();
+  const { selectedSlot, selectedItem, statFilters } = useInventoryStore();
+  const submitItemRequest = useInventoryStore(state => state.submitItemRequest);
 
-  if (!selectedSlot || !selectedItem) return null;
+  const canSubmit = selectedSlot && (selectedItem || statFilters.length > 0);
+
+  if (!canSubmit) return null;
 
   return (
-    <div className="w-80 mt-4">
-      <button
-        onClick={submitItemRequest}
-        className="w-full py-3 bg-yellow-600 text-white rounded hover:bg-yellow-500 transition-colors font-semibold"
-      >
-        Preview Item
-      </button>
-    </div>
+    <button
+      onClick={submitItemRequest}
+      className="w-full py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 font-semibold rounded-lg border border-yellow-400/30 hover:border-yellow-400/50 transition-colors"
+    >
+      Preview Item
+    </button>
   );
 } 

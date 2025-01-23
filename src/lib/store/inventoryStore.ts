@@ -3,7 +3,7 @@ import { StatValue } from '@/lib/types/inventory';
 
 interface PreviewItem {
   slot: string;
-  name: string;
+  name?: string;  // Make name optional
   stats: StatValue[];
   mode: 'own' | 'want';
 }
@@ -53,14 +53,14 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   
   submitItemRequest: () => {
     const { selectedSlot, selectedItem, statFilters, previewItems, mode } = get();
-    if (!selectedSlot || !selectedItem) return;
+    if (!selectedSlot || !statFilters.length) return;  // Only check for slot and stats
 
     set({
       previewItems: {
         ...previewItems,
         [selectedSlot]: {
           slot: selectedSlot,
-          name: selectedItem,
+          name: selectedItem || undefined,  // Make name optional
           stats: statFilters,
           mode: mode
         }

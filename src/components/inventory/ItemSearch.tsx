@@ -16,6 +16,13 @@ export default function ItemSearch({ mode }: { mode: 'own' | 'want' }) {
     }
   }, [selectedItem]);
 
+  useEffect(() => {
+    if (!selectedItem) {
+      setSearchTerm('');
+      setIsFocused(false);
+    }
+  }, [selectedItem]);
+
   const searchResults = isFocused
     ? items.result.flatMap(category => 
         category.entries.filter(item => {

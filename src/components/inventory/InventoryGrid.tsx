@@ -129,7 +129,7 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name: string; stats: StatV
       }}
     >
       <button 
-        className="absolute top-1 right-1 text-gray-500 hover:text-white opacity-0 group-hover:opacity-100"
+        className="absolute top-1 right-1 text-white/70 hover:text-white text-lg font-bold"
         onClick={(e) => {
           e.stopPropagation();
           useInventoryStore.getState().clearPreview(slotId);
@@ -147,9 +147,6 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name: string; stats: StatV
             <span>{stat.stat.replace('#', '')}</span>
           </div>
         ))}
-      </div>
-      <div className="mt-auto pt-2 text-xs text-gray-400 opacity-0 group-hover:opacity-100">
-        Click to edit
       </div>
     </div>
   );

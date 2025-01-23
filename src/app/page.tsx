@@ -7,6 +7,7 @@ import LevelInput from "@/components/inventory/LevelInput";
 import ResistanceSliders from "@/components/inventory/ResistanceSliders";
 import SearchSection from "@/components/inventory/SearchSection";
 import ColorLegend from "@/components/inventory/ColorLegend";
+import FindGearButton from "@/components/inventory/FindGearButton";
 
 export default function Home() {
   return (
@@ -30,6 +31,9 @@ export default function Home() {
               className="rounded-lg shadow-lg"
             />
             <InventoryGrid />
+          </div>
+          <div className="flex justify-end">
+            <FindGearButton />
           </div>
         </div>
       </div>

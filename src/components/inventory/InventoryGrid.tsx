@@ -143,7 +143,7 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: Stat
       <div className="mt-2 space-y-1 overflow-y-auto">
         {stats.map((stat, i) => (
           <div key={i} className="text-blue-300 text-xs flex items-baseline gap-1">
-            <span className="text-white">{stat.value}</span>
+            <span className="text-white">{stat.value || '[ANY]'}</span>
             <span>{stat.stat.replace('#', '')}</span>
           </div>
         ))}

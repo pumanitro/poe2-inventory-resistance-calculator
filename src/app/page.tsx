@@ -4,6 +4,7 @@ import ItemSearch from "@/components/inventory/ItemSearch";
 import StatFilter from "@/components/inventory/StatFilter";
 import SubmitButton from "@/components/inventory/SubmitButton";
 import LevelInput from "@/components/inventory/LevelInput";
+import ResistanceSliders from "@/components/inventory/ResistanceSliders";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <div className="flex gap-8">
         <div className="flex flex-col gap-4">
           <LevelInput />
+          <ResistanceSliders />
           <ItemSearch />
           <StatFilter />
           <SubmitButton />

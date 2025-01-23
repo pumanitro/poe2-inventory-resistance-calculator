@@ -7,12 +7,18 @@ interface PreviewItem {
   stats: StatValue[];
 }
 
+interface Resistances {
+  elemental: number;
+  chaos: number;
+}
+
 interface InventoryState {
   selectedSlot: string | null;
   selectedItem: string | null;
   statFilters: StatValue[];
   previewItems: Record<string, PreviewItem>;  // Map of slot -> preview
   currentLevel: number | null;
+  resistances: Resistances;
   // Actions
   setSelectedSlot: (slot: string | null) => void;
   setSelectedItem: (item: string | null) => void;
@@ -22,6 +28,7 @@ interface InventoryState {
   clearAllPreviews: () => void;
   editItem: (slot: string) => void;
   setCurrentLevel: (level: number | null) => void;
+  setResistances: (res: Resistances) => void;
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
@@ -30,6 +37,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   statFilters: [],
   previewItems: {},
   currentLevel: null,
+  resistances: { elemental: 75, chaos: 20 },
 
   setSelectedSlot: (slot) => set({ selectedSlot: slot }),
   setSelectedItem: (item) => set({ selectedItem: item }),
@@ -76,4 +84,6 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   },
 
   setCurrentLevel: (level) => set({ currentLevel: level }),
+
+  setResistances: (res) => set({ resistances: res }),
 })); 

@@ -111,12 +111,18 @@ const defaultSections: InventorySection[] = [
   }
 ];
 
-const ItemPreview = ({ name, stats, slotId }: { name: string; stats: StatValue[]; slotId: string }) => {
+const ItemPreview = ({ name, stats, slotId, mode }: { name: string; stats: StatValue[]; slotId: string; mode: 'own' | 'want' }) => {
   const editItem = useInventoryStore(state => state.editItem);
+
+  const getBgColor = () => {
+    return mode === 'own' 
+      ? 'bg-green-500/20'
+      : 'bg-blue-500/20';
+  };
 
   return (
     <div 
-      className="absolute inset-0 bg-gray-900/95 p-3 flex flex-col group"
+      className={`absolute inset-0 p-3 flex flex-col group ${getBgColor()}`}
       onClick={(e) => {
         e.stopPropagation();
         editItem(slotId);
@@ -182,6 +188,7 @@ export default function InventoryGrid() {
               name={previewItems[section.id].name} 
               stats={previewItems[section.id].stats}
               slotId={section.id}
+              mode={previewItems[section.id].mode}
             />
           )}
         </div>

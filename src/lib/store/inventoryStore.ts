@@ -5,6 +5,7 @@ interface PreviewItem {
   slot: string;
   name: string;
   stats: StatValue[];
+  mode: 'own' | 'want';
 }
 
 interface Resistances {
@@ -19,6 +20,9 @@ interface InventoryState {
   previewItems: Record<string, PreviewItem>;  // Map of slot -> preview
   currentLevel: number | null;
   resistances: Resistances;
+  mode: 'own' | 'want';
+  ownedItems: Set<string>;  // Just track item names for each mode
+  wantedItems: Set<string>;
   // Actions
   setSelectedSlot: (slot: string | null) => void;
   setSelectedItem: (item: string | null) => void;
@@ -29,6 +33,7 @@ interface InventoryState {
   editItem: (slot: string) => void;
   setCurrentLevel: (level: number | null) => void;
   setResistances: (res: Resistances) => void;
+  toggleItemInMode: (itemName: string) => void;
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
@@ -38,13 +43,16 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   previewItems: {},
   currentLevel: null,
   resistances: { elemental: 75, chaos: 20 },
+  mode: 'want',
+  ownedItems: new Set(),
+  wantedItems: new Set(),
 
   setSelectedSlot: (slot) => set({ selectedSlot: slot }),
   setSelectedItem: (item) => set({ selectedItem: item }),
   setStatFilters: (filters) => set({ statFilters: filters }),
   
   submitItemRequest: () => {
-    const { selectedSlot, selectedItem, statFilters, previewItems } = get();
+    const { selectedSlot, selectedItem, statFilters, previewItems, mode } = get();
     if (!selectedSlot || !selectedItem) return;
 
     set({
@@ -54,9 +62,9 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
           slot: selectedSlot,
           name: selectedItem,
           stats: statFilters,
+          mode: mode
         }
       },
-      // Clear selection after submit
       selectedSlot: null,
       selectedItem: null,
       statFilters: [],
@@ -86,4 +94,20 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   setCurrentLevel: (level) => set({ currentLevel: level }),
 
   setResistances: (res) => set({ resistances: res }),
+
+  toggleItemInMode: (itemName) => set((state) => {
+    const { mode, ownedItems, wantedItems } = state;
+    const targetSet = mode === 'own' ? ownedItems : wantedItems;
+    const newSet = new Set(targetSet);
+    
+    if (newSet.has(itemName)) {
+      newSet.delete(itemName);
+    } else {
+      newSet.add(itemName);
+    }
+
+    return mode === 'own' 
+      ? { ownedItems: newSet }
+      : { wantedItems: newSet };
+  }),
 })); 

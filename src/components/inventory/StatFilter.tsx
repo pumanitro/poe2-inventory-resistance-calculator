@@ -40,7 +40,7 @@ export default function StatFilter() {
   };
 
   return (
-    <div className="w-80 bg-gray-900/95 border border-gray-700 rounded-lg">
+    <div className="w-full bg-gray-900/95 border border-gray-700 rounded-lg">
       <div className="p-2 border-b border-gray-700 flex items-center">
         <span className="text-white font-semibold">Stat Filters</span>
         <button 

@@ -12,6 +12,7 @@ interface InventoryState {
   selectedItem: string | null;
   statFilters: StatValue[];
   previewItems: Record<string, PreviewItem>;  // Map of slot -> preview
+  currentLevel: number | null;
   // Actions
   setSelectedSlot: (slot: string | null) => void;
   setSelectedItem: (item: string | null) => void;
@@ -20,6 +21,7 @@ interface InventoryState {
   clearPreview: (slot: string) => void;
   clearAllPreviews: () => void;
   editItem: (slot: string) => void;
+  setCurrentLevel: (level: number | null) => void;
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
@@ -27,6 +29,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   selectedItem: null,
   statFilters: [],
   previewItems: {},
+  currentLevel: null,
 
   setSelectedSlot: (slot) => set({ selectedSlot: slot }),
   setSelectedItem: (item) => set({ selectedItem: item }),
@@ -71,4 +74,6 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       statFilters: item.stats,
     });
   },
+
+  setCurrentLevel: (level) => set({ currentLevel: level }),
 })); 

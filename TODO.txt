@@ -1,34 +1,10 @@
 [x] 1. Create React and Nextjs App scaffolding that can be easily deployed to vercel 
 [x] 2. Display inventoryBackground.webp image in the middle of the screen
-[] 3. Let me add items to given inventory sections by using poe 2 api 
-    [] 3.1. Create types for POE2 items and inventory sections
-        We do have:
-        - LeftHandWeapon
-        - RightHandWeapon
-        - Head
-        - Body
-        - Hands
-        - Feet
-        - LeftRing
-        - RightRing
-        - Amulet
-        - Belt
-        - HealthFlask
-        - ManaFlask
-        - Charm1
-        - Charm2
-        - Charm3
-    [] 3.2. Create a layout of clickable inventory sections on top of the background image
-    [] 3.3. Set up API integration
-        [] 3.3.1. Create API utility functions for fetching items
-        [] 3.3.2. Add error handling and loading states
-    [] 3.4. Create UI components
-        [] 3.4.1. Create ItemCard component for displaying items
-        [] 3.4.2. Create ItemSelector/Search component
-        [] 3.4.3. Create DragAndDrop functionality for items
-    [] 3.5. Implement state management
-        [] 3.5.1. Set up inventory state management (likely using React Context or Zustand)
-        [] 3.5.2. Add actions for adding/removing items
-    [] 3.6. Add persistence layer
-        [] 3.6.1. Save inventory state to localStorage or database
-        [] 3.6.2. Load saved inventory on page load 
+[x] 3. Let me add items to given inventory sections by using poe 2 api 
+[] 4. 
+1. My current level (search for items with max e.g. 33 lvl)
+2. Define items I don't want to change (e.g. legendary shield)
+3. Define must to have's on items (e.g. 10 spirit OR + 2 level of lightning spells, movement speed)
+4. 
+    - define good to haves with weights -> spell damage
+5. adjust elemental resistances with switch (0-100% set to 75% by default?) + chaos resitances too

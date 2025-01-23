@@ -6,6 +6,7 @@ import SubmitButton from "@/components/inventory/SubmitButton";
 import LevelInput from "@/components/inventory/LevelInput";
 import ResistanceSliders from "@/components/inventory/ResistanceSliders";
 import SearchSection from "@/components/inventory/SearchSection";
+import ColorLegend from "@/components/inventory/ColorLegend";
 
 export default function Home() {
   return (
@@ -17,16 +18,19 @@ export default function Home() {
           <SearchSection />
           <SubmitButton />
         </div>
-        <div className="relative">
-          <Image
-            src="/images/inventoryBackground.webp"
-            alt="Inventory Background"
-            width={800}
-            height={600}
-            priority
-            className="rounded-lg shadow-lg"
-          />
-          <InventoryGrid />
+        <div className="flex flex-col">
+          <ColorLegend />
+          <div className="relative">
+            <Image
+              src="/images/inventoryBackground.webp"
+              alt="Inventory Background"
+              width={800}
+              height={600}
+              priority
+              className="rounded-lg shadow-lg"
+            />
+            <InventoryGrid />
+          </div>
         </div>
       </div>
     </main>

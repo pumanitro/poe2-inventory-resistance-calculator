@@ -116,8 +116,8 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name: string; stats: StatV
 
   const getBgColor = () => {
     return mode === 'own' 
-      ? 'bg-green-500/20'
-      : 'bg-blue-500/20';
+      ? 'bg-green-500/40'
+      : 'bg-blue-500/40';
   };
 
   return (

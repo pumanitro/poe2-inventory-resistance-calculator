@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { InventorySection, InventorySectionType, EquipmentSlotType, StatValue } from '@/lib/types/inventory';
 import { useInventoryStore } from '@/lib/store/inventoryStore';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 const defaultSections: InventorySection[] = [
   {
@@ -128,17 +129,32 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: Stat
         editItem(slotId);
       }}
     >
-      <button 
-        className="absolute top-1 right-1 text-white/70 hover:text-white text-lg font-bold"
-        onClick={(e) => {
-          e.stopPropagation();
-          useInventoryStore.getState().clearPreview(slotId);
-        }}
-      >
-        ×
-      </button>
-      <div className="text-yellow-400 text-sm font-semibold border-b border-gray-700 pb-2">
-        {name || '[ANY]'}
+      <div className="flex justify-between items-start">
+        <div className="text-yellow-400 text-sm font-semibold border-b border-gray-700 pb-2">
+          {name || '[ANY]'}
+        </div>
+        <div className="flex gap-1">
+          {mode === 'want' && (
+            <button 
+              className="text-yellow-400/70 hover:text-yellow-400 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                /* TODO: Add search handler */
+              }}
+            >
+              <MagnifyingGlassIcon className="w-4 h-4" />
+            </button>
+          )}
+          <button 
+            className="text-white/70 hover:text-white text-lg font-bold"
+            onClick={(e) => {
+              e.stopPropagation();
+              useInventoryStore.getState().clearPreview(slotId);
+            }}
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div className="mt-2 space-y-1 overflow-y-auto">
         {stats.map((stat, i) => (
@@ -155,12 +171,40 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: Stat
 export default function InventoryGrid() {
   const { selectedSlot, setSelectedSlot, previewItems } = useInventoryStore();
 
+  const renderSlot = (slot: string) => {
+    const item = previewItems[slot];
+    
+    return (
+      <div key={slot} className="relative p-2 bg-gray-800/50 rounded border border-gray-700/50 min-h-24">
+        <div className="text-sm text-gray-400 mb-1">{slot}</div>
+        {item && (
+          <div className="relative">
+            {item.name && <div className="text-sm text-yellow-400">{item.name}</div>}
+            <div className="text-xs text-gray-300 space-y-1">
+              {item.stats.map((stat, i) => (
+                <div key={i}>{stat.stat.replace('#', stat.value)}</div>
+              ))}
+            </div>
+            {item.mode === 'want' && (
+              <button 
+                className="absolute top-0 right-0 p-1 text-yellow-400/70 hover:text-yellow-400 transition-colors"
+                onClick={() => {/* TODO: Add search handler */}}
+              >
+                <MagnifyingGlassIcon className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="absolute inset-0">
       {defaultSections.map((section) => (
         <div
           key={section.id}
-          className={`absolute border cursor-pointer ${
+          className={`absolute border cursor-pointer group ${
             selectedSlot === section.id
               ? 'border-yellow-400/70 z-50'
               : 'border-gray-400/30 hover:border-yellow-400/50'
@@ -183,13 +227,23 @@ export default function InventoryGrid() {
             {section.name}
           </div>
           
-          {previewItems[section.id] && (
+          {previewItems[section.id] ? (
             <ItemPreview 
               name={previewItems[section.id].name} 
               stats={previewItems[section.id].stats}
               slotId={section.id}
               mode={previewItems[section.id].mode}
             />
+          ) : (
+            <button 
+              className="absolute top-2 right-2 p-1 text-yellow-400/0 group-hover:text-yellow-400/70 hover:!text-yellow-400 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                /* TODO: Add search handler */
+              }}
+            >
+              <MagnifyingGlassIcon className="w-4 h-4" />
+            </button>
           )}
         </div>
       ))}

@@ -6,16 +6,16 @@ import { useInventoryStore } from '@/lib/store/inventoryStore';
 export default function ResistanceSliders() {
   const [elementalRes, setElementalRes] = useState(75); // Default max ele res
   const [chaosRes, setChaosRes] = useState(20); // Default chaos res is 20%
-  const { setResistances } = useInventoryStore();
+  const { setDesiredResistances } = useInventoryStore();
 
   const handleElementalChange = (value: number) => {
     setElementalRes(value);
-    setResistances({ elemental: value, chaos: chaosRes });
+    setDesiredResistances({ elemental: value, chaos: chaosRes });
   };
 
   const handleChaosChange = (value: number) => {
     setChaosRes(value);
-    setResistances({ elemental: elementalRes, chaos: value });
+    setDesiredResistances({ elemental: elementalRes, chaos: value });
   };
 
   return (

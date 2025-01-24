@@ -19,7 +19,7 @@ interface InventoryState {
   statFilters: StatValue[];
   previewItems: Record<string, PreviewItem>;  // Map of slot -> preview
   currentLevel: number | null;
-  resistances: Resistances;
+  desiredResistances: Resistances;
   mode: 'own' | 'want';
   ownedItems: Set<string>;  // Just track item names for each mode
   wantedItems: Set<string>;
@@ -32,7 +32,7 @@ interface InventoryState {
   clearAllPreviews: () => void;
   editItem: (slot: string) => void;
   setCurrentLevel: (level: number | null) => void;
-  setResistances: (res: Resistances) => void;
+  setDesiredResistances: (res: Resistances) => void;
   toggleItemInMode: (itemName: string) => void;
 }
 
@@ -42,7 +42,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   statFilters: [],
   previewItems: {},
   currentLevel: null,
-  resistances: { elemental: 75, chaos: 20 },
+  desiredResistances: { elemental: 75, chaos: 20 },
   mode: 'want',
   ownedItems: new Set(),
   wantedItems: new Set(),
@@ -93,7 +93,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
   setCurrentLevel: (level) => set({ currentLevel: level }),
 
-  setResistances: (res) => set({ resistances: res }),
+  setDesiredResistances: (res) => set({ desiredResistances: res }),
 
   toggleItemInMode: (itemName) => set((state) => {
     const { mode, ownedItems, wantedItems } = state;

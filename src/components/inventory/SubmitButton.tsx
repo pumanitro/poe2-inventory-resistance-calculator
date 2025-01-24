@@ -15,7 +15,7 @@ export default function SubmitButton() {
       onClick={submitItemRequest}
       className="w-full py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 font-semibold rounded-lg border border-yellow-400/30 hover:border-yellow-400/50 transition-colors"
     >
-      Preview Item
+      Add Item
     </button>
   );
 } 

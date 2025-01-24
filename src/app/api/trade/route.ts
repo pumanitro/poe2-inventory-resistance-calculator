@@ -1,13 +1,17 @@
 import { NextResponse } from 'next/server';
+import { API_CONFIG } from '@/lib/api/config';
+
+interface TradeError {
+  error: {
+    code: number;
+    message: string;
+  };
+}
 
 const makeTradeRequest = async (body: Record<string, unknown>) => {
     const headers = {
-        'accept': '*/*',
-        'content-type': 'application/json',
-        'cookie': 'POESESSID=e4a60421ff35d8ce2d27b07f2184c3b0; cf_clearance=Ne7CYNfCYPrcF4p9j5Nc5LDVuEcPedT9qRIkXppsbVI-1737754789-1.2.1.1-ffggrhqvWL54FNImC1j65Wd0WtMb0SM.OapuHLFA9JatlEyqfh8Lm3dHARcEUxVptu.lRoBJXjFXrieKtsRBXiGRLhQ7IeAn6OSpETS6VJTjUEh6j9SI4jm2_oeNO4cF0i3brzeFFxEySXENmOaTBkaBro73WB9ofah8MUNcH6sBT6Wsx4vz7nU0qV44hw3W37mBGOzOHh9E4I2ePu7cv174vkw3hwOjbIAlIwbmNsdV5._kTx_DQObLOOBv1x1261Mg1AJAQZ.u2DIkhkZDOzeyEJ7JCjpUb6QtkEhrA_6jtMH3N5zK44qKARyDUg8AbggLtV6jzrvhwekPZLnG0g',
-        'origin': 'https://www.pathofexile.com',
-        'referer': 'https://www.pathofexile.com/trade2/search/poe2/Hardcore/O0vO4brfE',
-        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        ...API_CONFIG.headers,
+        'referer': `${API_CONFIG.BASE_URL}/trade2/search/${API_CONFIG.REALM}/${API_CONFIG.LEAGUE}`,
     };
 
     try {
@@ -16,7 +20,21 @@ const makeTradeRequest = async (body: Record<string, unknown>) => {
             headers,
             body: JSON.stringify(body)
         });
-        return await response.json();
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        // Check for authentication error
+        if ((data as TradeError)?.error?.code === 2) {
+            return {
+                error: {
+                    code: 'AUTH_REQUIRED',
+                    message: 'Authentication required. Please update your POE session cookie.',
+                    details: 'Visit pathofexile.com, log in, and copy your POESESSID cookie value.'
+                }
+            };
+        }
+        
+        return data;
     } catch (error) {
         console.error('Error:', error);
         throw error;
@@ -26,14 +44,12 @@ const makeTradeRequest = async (body: Record<string, unknown>) => {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-
-        // Log curl format for debugging
-        console.log(`curl 'https://www.pathofexile.com/api/trade2/search/poe2/Hardcore' \\
-  -H 'accept: */*' \\
-  -H 'content-type: application/json' \\
-  --data-raw '${JSON.stringify(body)}'`);
-
         const data = await makeTradeRequest(body);
+        
+        if (data.error?.code === 'AUTH_REQUIRED') {
+            return NextResponse.json(data, { status: 401 });
+        }
+        
         return NextResponse.json(data);
     } catch (error) {
         console.error('Trade API Error:', error);

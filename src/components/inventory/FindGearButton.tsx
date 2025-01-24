@@ -77,6 +77,11 @@ export default function FindGearButton() {
       level
     );
 
+    if (searchResult?.error?.code === 'AUTH_REQUIRED') {
+      alert(`${searchResult.error.message}\n\n${searchResult.error.details}`);
+      return;
+    }
+
     console.log('Search Results:', searchResult);
 
     console.log('Character Summary:', {

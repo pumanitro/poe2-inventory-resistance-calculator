@@ -26,7 +26,7 @@ interface TradeQuery {
     };
   };
   sort: {
-    price: string;
+    price?: string;
     "statgroup.0": string;
   };
 }
@@ -38,7 +38,27 @@ interface ResistanceWeight {
   chaos: number;
 }
 
-export async function findItem(missingResistances: ResistanceWeight, level: number) {
+interface TradeResult {
+  id: string;
+  result: string[];
+  total: number;
+}
+
+interface TradeItem {
+  id: string;
+  // Add more specific item properties as needed
+}
+
+interface TradeResponse {
+  error?: {
+    code: string;
+    message: string;
+    details: string;
+  };
+  items?: TradeItem[];
+}
+
+export async function findItem(missingResistances: ResistanceWeight, level: number): Promise<TradeResponse | null> {
   const query: TradeQuery = {
     query: {
       status: { option: "online" },
@@ -93,13 +113,13 @@ export async function findItem(missingResistances: ResistanceWeight, level: numb
       }
     },
     sort: { 
-      price: "asc",
       "statgroup.0": "desc"  // Sort by highest weighted stat group
     }
   };
 
   try {
-    const response = await fetch('/api/trade', {
+    // First request - search for items
+    const searchResponse = await fetch('/api/trade', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -107,7 +127,24 @@ export async function findItem(missingResistances: ResistanceWeight, level: numb
       body: JSON.stringify(query)
     });
 
-    return await response.json();
+    const searchResult = await searchResponse.json();
+    
+    if (searchResult.error) {
+      return searchResult;
+    }
+
+    // Check if we have a valid response with results
+    if (!searchResult?.result || !Array.isArray(searchResult.result) || searchResult.result.length === 0) {
+      console.log('No items found matching criteria');
+      return null;
+    }
+
+    // Second request - fetch item details
+    const itemIds = searchResult.result.slice(0, 10).join(',');
+    const fetchResponse = await fetch(`/api/trade/fetch/${itemIds}?query=${searchResult.id}`);
+    const items = await fetchResponse.json() as TradeItem[];
+
+    return { items };
   } catch (error) {
     console.error('Error searching for items:', error);
     return null;

@@ -18,6 +18,14 @@ export default function FindGearButton() {
     Object.values(previewItems).forEach(item => {
       if (item.mode === 'own') {
         item.stats.forEach(stat => {
+          // Handle all elemental resistances
+          if (stat.stat === "#% to all Elemental Resistances") {
+            const value = Number(stat.value) || 0;
+            current.fire += value;
+            current.cold += value;
+            current.lightning += value;
+          }
+          // Handle individual resistances
           if (stat.stat === "#% to Fire Resistance") {
             current.fire += Number(stat.value) || 0;
           }

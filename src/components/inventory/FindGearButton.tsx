@@ -1,6 +1,7 @@
 'use client';
 
 import { useInventoryStore } from '@/lib/store/inventoryStore';
+import { findItem } from '@/lib/api/tradeApi';
 
 interface Resistances {
   fire: number;
@@ -62,9 +63,22 @@ export default function FindGearButton() {
     };
   };
 
-  const handleFindGear = () => {
+  const handleFindGear = async () => {
     const missingResistances = calculateMissingResistances();
-    
+    const level = currentLevel || 100;
+
+    const searchResult = await findItem(
+      {
+        fire: Math.ceil(missingResistances.fire),
+        cold: Math.ceil(missingResistances.cold),
+        lightning: Math.ceil(missingResistances.lightning),
+        chaos: Math.ceil(missingResistances.chaos)
+      },
+      level
+    );
+
+    console.log('Search Results:', searchResult);
+
     console.log('Character Summary:', {
       level: currentLevel || 'Not set',
       desiredResistances: {

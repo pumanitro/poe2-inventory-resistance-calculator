@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { InventorySection, InventorySectionType, EquipmentSlotType, StatValue } from '@/lib/types/inventory';
 import { useInventoryStore } from '@/lib/store/inventoryStore';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { handleFindGear } from './FindGearButton';
 
 const defaultSections: InventorySection[] = [
   {
@@ -139,7 +140,7 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: Stat
               className="text-yellow-400/70 hover:text-yellow-400 transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                /* TODO: Add search handler */
+                handleFindGear();
               }}
             >
               <MagnifyingGlassIcon className="w-4 h-4" />
@@ -188,7 +189,10 @@ export default function InventoryGrid() {
             {item.mode === 'want' && (
               <button 
                 className="absolute top-0 right-0 p-1 text-yellow-400/70 hover:text-yellow-400 transition-colors"
-                onClick={() => {/* TODO: Add search handler */}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFindGear();
+                }}
               >
                 <MagnifyingGlassIcon className="w-4 h-4" />
               </button>
@@ -239,7 +243,7 @@ export default function InventoryGrid() {
               className="absolute top-2 right-2 p-1 text-yellow-400/0 group-hover:text-yellow-400/70 hover:!text-yellow-400 transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                /* TODO: Add search handler */
+                handleFindGear();
               }}
             >
               <MagnifyingGlassIcon className="w-4 h-4" />

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { StatValue } from '@/lib/types/inventory';
 
 interface PreviewItem {
@@ -36,78 +37,98 @@ interface InventoryState {
   toggleItemInMode: (itemName: string) => void;
 }
 
-export const useInventoryStore = create<InventoryState>((set, get) => ({
-  selectedSlot: null,
-  selectedItem: null,
-  statFilters: [],
-  previewItems: {},
-  currentLevel: null,
-  desiredResistances: { elemental: 75, chaos: 20 },
-  mode: 'want',
-  ownedItems: new Set(),
-  wantedItems: new Set(),
-
-  setSelectedSlot: (slot) => set({ selectedSlot: slot }),
-  setSelectedItem: (item) => set({ selectedItem: item }),
-  setStatFilters: (filters) => set({ statFilters: filters }),
-  
-  submitItemRequest: () => {
-    const { selectedSlot, selectedItem, statFilters, previewItems, mode } = get();
-    if (!selectedSlot || !statFilters.length) return;  // Only check for slot and stats
-
-    set({
-      previewItems: {
-        ...previewItems,
-        [selectedSlot]: {
-          slot: selectedSlot,
-          name: selectedItem || undefined,  // Make name optional
-          stats: statFilters,
-          mode: mode
-        }
-      },
+export const useInventoryStore = create<InventoryState>()(
+  persist(
+    (set, get) => ({
       selectedSlot: null,
       selectedItem: null,
       statFilters: [],
-    });
-  },
+      previewItems: {},
+      currentLevel: null,
+      desiredResistances: { elemental: 75, chaos: 20 },
+      mode: 'want',
+      ownedItems: new Set(),
+      wantedItems: new Set(),
 
-  clearPreview: (slot) => set((state) => {
-    const newPreviews = { ...state.previewItems };
-    delete newPreviews[slot];
-    return { previewItems: newPreviews };
-  }),
+      setSelectedSlot: (slot) => set({ selectedSlot: slot }),
+      setSelectedItem: (item) => set({ selectedItem: item }),
+      setStatFilters: (filters) => set({ statFilters: filters }),
+      
+      submitItemRequest: () => {
+        const { selectedSlot, selectedItem, statFilters, previewItems, mode } = get();
+        if (!selectedSlot || !statFilters.length) return;  // Only check for slot and stats
 
-  clearAllPreviews: () => set({ previewItems: {} }),
+        set({
+          previewItems: {
+            ...previewItems,
+            [selectedSlot]: {
+              slot: selectedSlot,
+              name: selectedItem || undefined,  // Make name optional
+              stats: statFilters,
+              mode: mode
+            }
+          },
+          selectedSlot: null,
+          selectedItem: null,
+          statFilters: [],
+        });
+      },
 
-  editItem: (slot: string) => {
-    const { previewItems } = get();
-    const item = previewItems[slot];
-    if (!item) return;
+      clearPreview: (slot) => set((state) => {
+        const newPreviews = { ...state.previewItems };
+        delete newPreviews[slot];
+        return { previewItems: newPreviews };
+      }),
 
-    set({
-      selectedSlot: slot,
-      selectedItem: item.name,
-      statFilters: item.stats,
-    });
-  },
+      clearAllPreviews: () => set({ previewItems: {} }),
 
-  setCurrentLevel: (level) => set({ currentLevel: level }),
+      editItem: (slot: string) => {
+        const { previewItems } = get();
+        const item = previewItems[slot];
+        if (!item) return;
 
-  setDesiredResistances: (res) => set({ desiredResistances: res }),
+        set({
+          selectedSlot: slot,
+          selectedItem: item.name,
+          statFilters: item.stats,
+        });
+      },
 
-  toggleItemInMode: (itemName) => set((state) => {
-    const { mode, ownedItems, wantedItems } = state;
-    const targetSet = mode === 'own' ? ownedItems : wantedItems;
-    const newSet = new Set(targetSet);
-    
-    if (newSet.has(itemName)) {
-      newSet.delete(itemName);
-    } else {
-      newSet.add(itemName);
+      setCurrentLevel: (level) => set({ currentLevel: level }),
+
+      setDesiredResistances: (res) => set({ desiredResistances: res }),
+
+      toggleItemInMode: (itemName) => set((state) => {
+        const { mode, ownedItems, wantedItems } = state;
+        const targetSet = mode === 'own' ? ownedItems : wantedItems;
+        const newSet = new Set(targetSet);
+        
+        if (newSet.has(itemName)) {
+          newSet.delete(itemName);
+        } else {
+          newSet.add(itemName);
+        }
+
+        return mode === 'own' 
+          ? { ownedItems: newSet }
+          : { wantedItems: newSet };
+      }),
+    }),
+    {
+      name: 'poe2-inventory-storage',
+      partialize: (state) => ({
+        currentLevel: state.currentLevel,
+        desiredResistances: state.desiredResistances,
+        previewItems: state.previewItems,
+        ownedItems: [...state.ownedItems],
+        wantedItems: [...state.wantedItems],
+      }),
+      onRehydrateStorage: (state) => {
+        if (state) {
+          state.ownedItems = new Set(state.ownedItems);
+          state.wantedItems = new Set(state.wantedItems);
+        }
+      },
     }
-
-    return mode === 'own' 
-      ? { ownedItems: newSet }
-      : { wantedItems: newSet };
-  }),
-})); 
+  )
+); 

@@ -198,10 +198,10 @@ export default function InventoryGrid() {
                   <MagnifyingGlassIcon className="w-4 h-4" />
                 </button>
                 {searchResults[slot] && (
-                  <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 rounded shadow-lg z-50 w-64">
+                  <div className="absolute top-full left-0 mt-2 bg-gray-800 rounded shadow-lg z-50 w-32 group/result">
                     <div className="relative">
                       <button 
-                        className="absolute -top-1 -right-1 p-1 text-gray-400 hover:text-white"
+                        className="absolute -top-1 -right-1 p-1 text-gray-400 hover:text-white z-10"
                         onClick={(e) => {
                           e.stopPropagation();
                           clearSearchResult(slot);
@@ -211,12 +211,21 @@ export default function InventoryGrid() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
-                      <img src={searchResults[slot].icon} alt={searchResults[slot].name} className="w-full h-32 object-contain" />
-                      <div className="text-yellow-400 font-semibold mt-2">{searchResults[slot].name}</div>
-                      <div className="text-gray-400 text-sm">{searchResults[slot].typeLine}</div>
-                      {searchResults[slot].explicitMods?.map((mod, i) => (
-                        <div key={i} className="text-blue-300 text-xs mt-1">{mod}</div>
-                      ))}
+                      
+                      <img 
+                        src={searchResults[slot].icon} 
+                        alt={searchResults[slot].name} 
+                        className="w-full h-32 object-contain" 
+                      />
+
+                      {/* Details popup on hover */}
+                      <div className="absolute left-full top-0 ml-2 hidden group-hover/result:block w-64 bg-gray-800 p-2 rounded shadow-lg">
+                        <div className="text-yellow-400 font-semibold">{searchResults[slot].name}</div>
+                        <div className="text-gray-400 text-sm">{searchResults[slot].typeLine}</div>
+                        {searchResults[slot].explicitMods?.map((mod, i) => (
+                          <div key={i} className="text-blue-300 text-xs mt-1">{mod}</div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -275,10 +284,10 @@ export default function InventoryGrid() {
                 <MagnifyingGlassIcon className="w-4 h-4" />
               </button>
               {searchResults[section.id] && (
-                <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 rounded shadow-lg z-50 w-64">
+                <div className="absolute top-full left-0 mt-2 bg-gray-800 rounded shadow-lg z-50 w-32 group/result">
                   <div className="relative">
                     <button 
-                      className="absolute -top-1 -right-1 p-1 text-gray-400 hover:text-white"
+                      className="absolute -top-1 -right-1 p-1 text-gray-400 hover:text-white z-10"
                       onClick={(e) => {
                         e.stopPropagation();
                         clearSearchResult(section.id);
@@ -288,12 +297,21 @@ export default function InventoryGrid() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
-                    <img src={searchResults[section.id].icon} alt={searchResults[section.id].name} className="w-full h-32 object-contain" />
-                    <div className="text-yellow-400 font-semibold mt-2">{searchResults[section.id].name}</div>
-                    <div className="text-gray-400 text-sm">{searchResults[section.id].typeLine}</div>
-                    {searchResults[section.id].explicitMods?.map((mod, i) => (
-                      <div key={i} className="text-blue-300 text-xs mt-1">{mod}</div>
-                    ))}
+                    
+                    <img 
+                      src={searchResults[section.id].icon} 
+                      alt={searchResults[section.id].name} 
+                      className="w-full h-32 object-contain" 
+                    />
+
+                    {/* Details popup on hover */}
+                    <div className="absolute left-full top-0 ml-2 hidden group-hover/result:block w-64 bg-gray-800 p-2 rounded shadow-lg">
+                      <div className="text-yellow-400 font-semibold">{searchResults[section.id].name}</div>
+                      <div className="text-gray-400 text-sm">{searchResults[section.id].typeLine}</div>
+                      {searchResults[section.id].explicitMods?.map((mod, i) => (
+                        <div key={i} className="text-blue-300 text-xs mt-1">{mod}</div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}

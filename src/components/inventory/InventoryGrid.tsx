@@ -140,7 +140,7 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: Stat
               className="text-yellow-400/70 hover:text-yellow-400 transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                handleFindGear();
+                handleFindGear(slotId);
               }}
             >
               <MagnifyingGlassIcon className="w-4 h-4" />
@@ -170,7 +170,7 @@ const ItemPreview = ({ name, stats, slotId, mode }: { name?: string; stats: Stat
 };
 
 export default function InventoryGrid() {
-  const { selectedSlot, setSelectedSlot, previewItems } = useInventoryStore();
+  const { selectedSlot, setSelectedSlot, previewItems, searchResults } = useInventoryStore();
 
   const renderSlot = (slot: string) => {
     const item = previewItems[slot];
@@ -187,15 +187,27 @@ export default function InventoryGrid() {
               ))}
             </div>
             {item.mode === 'want' && (
-              <button 
-                className="absolute top-0 right-0 p-1 text-yellow-400/70 hover:text-yellow-400 transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleFindGear();
-                }}
-              >
-                <MagnifyingGlassIcon className="w-4 h-4" />
-              </button>
+              <div className="relative">
+                <button 
+                  className="text-yellow-400/70 hover:text-yellow-400 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFindGear(slot);
+                  }}
+                >
+                  <MagnifyingGlassIcon className="w-4 h-4" />
+                </button>
+                {searchResults[slot] && (
+                  <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 rounded shadow-lg z-50 w-64">
+                    <img src={searchResults[slot].icon} alt={searchResults[slot].name} className="w-full h-32 object-contain" />
+                    <div className="text-yellow-400 font-semibold mt-2">{searchResults[slot].name}</div>
+                    <div className="text-gray-400 text-sm">{searchResults[slot].typeLine}</div>
+                    {searchResults[slot].explicitMods?.map((mod, i) => (
+                      <div key={i} className="text-blue-300 text-xs mt-1">{mod}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -239,15 +251,27 @@ export default function InventoryGrid() {
               mode={previewItems[section.id].mode}
             />
           ) : (
-            <button 
-              className="absolute top-2 right-2 p-1 text-yellow-400/0 group-hover:text-yellow-400/70 hover:!text-yellow-400 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleFindGear();
-              }}
-            >
-              <MagnifyingGlassIcon className="w-4 h-4" />
-            </button>
+            <div className="relative">
+              <button 
+                className="absolute top-2 right-2 p-1 text-yellow-400/0 group-hover:text-yellow-400/70 hover:!text-yellow-400 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFindGear(section.id);
+                }}
+              >
+                <MagnifyingGlassIcon className="w-4 h-4" />
+              </button>
+              {searchResults[section.id] && (
+                <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 rounded shadow-lg z-50 w-64">
+                  <img src={searchResults[section.id].icon} alt={searchResults[section.id].name} className="w-full h-32 object-contain" />
+                  <div className="text-yellow-400 font-semibold mt-2">{searchResults[section.id].name}</div>
+                  <div className="text-gray-400 text-sm">{searchResults[section.id].typeLine}</div>
+                  {searchResults[section.id].explicitMods?.map((mod, i) => (
+                    <div key={i} className="text-blue-300 text-xs mt-1">{mod}</div>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
       ))}

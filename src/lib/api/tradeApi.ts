@@ -46,7 +46,27 @@ interface TradeResult {
 
 interface TradeItem {
   id: string;
-  // Add more specific item properties as needed
+  icon?: string;
+  name?: string;
+  typeLine?: string;
+  explicitMods?: string[];
+  properties?: Array<{
+    name: string;
+    values: Array<[string, number]>;
+  }>;
+}
+
+interface RawTradeItem {
+  id: string;
+  icon: string;
+  name?: string;
+  baseType: string;
+  typeLine: string;
+  explicitMods?: string[];
+  properties?: Array<{
+    name: string;
+    values: Array<[string, number]>;
+  }>;
 }
 
 interface TradeResponse {
@@ -142,9 +162,26 @@ export async function findItem(missingResistances: ResistanceWeight, level: numb
     // Second request - fetch item details
     const itemIds = searchResult.result.slice(0, 10).join(',');
     const fetchResponse = await fetch(`/api/trade/fetch/${itemIds}?query=${searchResult.id}`);
-    const items = await fetchResponse.json() as TradeItem[];
+    const fetchResult = await fetchResponse.json();
 
-    return { items };
+    console.log('Fetch result:', fetchResult); // Debug the raw response
+
+    // The actual items are in the result array
+    if (fetchResult?.result && Array.isArray(fetchResult.result)) {
+      const items = fetchResult.result.map((result: any) => ({
+        id: result.item.id,
+        icon: result.item.icon,
+        name: result.item.name || result.item.baseType,
+        typeLine: result.item.typeLine,
+        explicitMods: result.item.explicitMods || [],
+        properties: result.item.properties || []
+      }));
+
+      console.log('Mapped items:', items);
+      return { items };
+    }
+
+    return null;
   } catch (error) {
     console.error('Error searching for items:', error);
     return null;

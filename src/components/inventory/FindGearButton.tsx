@@ -10,8 +10,8 @@ interface Resistances {
   chaos: number;
 }
 
-export const handleFindGear = async () => {
-  const { currentLevel, desiredResistances, previewItems } = useInventoryStore.getState();
+export const handleFindGear = async (slotId?: string) => {
+  const { currentLevel, desiredResistances, previewItems, setSearchResult } = useInventoryStore.getState();
   const missingResistances = calculateMissingResistances();
   const level = currentLevel || 100;
 
@@ -30,7 +30,15 @@ export const handleFindGear = async () => {
     return;
   }
 
-  console.log('Search Results:', searchResult);
+  if (searchResult?.items?.[0] && slotId) {
+    setSearchResult(slotId, {
+      icon: searchResult.items[0].icon,
+      name: searchResult.items[0].name,
+      typeLine: searchResult.items[0].typeLine,
+      explicitMods: searchResult.items[0].explicitMods,
+      properties: searchResult.items[0].properties
+    });
+  }
 
   console.log('Character Summary:', {
     level: currentLevel || 'Not set',
@@ -53,7 +61,7 @@ export default function FindGearButton() {
   return (
     <button 
       className="mt-4 px-6 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 font-semibold rounded-lg border border-yellow-400/30 hover:border-yellow-400/50 transition-colors"
-      onClick={handleFindGear}
+      onClick={() => handleFindGear()}
     >
       Find Gear
     </button>

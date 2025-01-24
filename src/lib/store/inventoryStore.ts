@@ -14,6 +14,17 @@ interface Resistances {
   chaos: number;
 }
 
+interface SearchResult {
+  icon?: string;
+  name?: string;
+  typeLine?: string;
+  explicitMods?: string[];
+  properties?: Array<{
+    name: string;
+    values: Array<[string, number]>;
+  }>;
+}
+
 interface InventoryState {
   selectedSlot: string | null;
   selectedItem: string | null;
@@ -24,6 +35,7 @@ interface InventoryState {
   mode: 'own' | 'want';
   ownedItems: Set<string>;  // Just track item names for each mode
   wantedItems: Set<string>;
+  searchResults: Record<string, SearchResult>;
   // Actions
   setSelectedSlot: (slot: string | null) => void;
   setSelectedItem: (item: string | null) => void;
@@ -35,6 +47,8 @@ interface InventoryState {
   setCurrentLevel: (level: number | null) => void;
   setDesiredResistances: (res: Resistances) => void;
   toggleItemInMode: (itemName: string) => void;
+  setSearchResult: (slotId: string, result: SearchResult) => void;
+  clearSearchResult: (slotId: string) => void;
 }
 
 export const useInventoryStore = create<InventoryState>()(
@@ -49,6 +63,7 @@ export const useInventoryStore = create<InventoryState>()(
       mode: 'want',
       ownedItems: new Set(),
       wantedItems: new Set(),
+      searchResults: {},
 
       setSelectedSlot: (slot) => set({ selectedSlot: slot }),
       setSelectedItem: (item) => set({ selectedItem: item }),
@@ -113,6 +128,30 @@ export const useInventoryStore = create<InventoryState>()(
           ? { ownedItems: newSet }
           : { wantedItems: newSet };
       }),
+
+      setSearchResult: (slotId, result) => 
+        set((state) => {
+          const newState = {
+            searchResults: {
+              ...state.searchResults,
+              [slotId]: result
+            }
+          };
+          console.log('Store state after search:', {
+            searchResults: newState.searchResults,
+            previewItems: state.previewItems,
+            currentLevel: state.currentLevel,
+            desiredResistances: state.desiredResistances,
+            mode: state.mode
+          });
+          return newState;
+        }),
+
+      clearSearchResult: (slotId) =>
+        set((state) => {
+          const { [slotId]: _, ...rest } = state.searchResults;
+          return { searchResults: rest };
+        }),
     }),
     {
       name: 'poe2-inventory-storage',
@@ -122,6 +161,7 @@ export const useInventoryStore = create<InventoryState>()(
         previewItems: state.previewItems,
         ownedItems: [...state.ownedItems],
         wantedItems: [...state.wantedItems],
+        searchResults: state.searchResults,
       }),
       onRehydrateStorage: (state) => {
         if (state) {

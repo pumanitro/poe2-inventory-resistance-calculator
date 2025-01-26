@@ -4,12 +4,11 @@ I did not care about code quality here, but fastest way to provide users value.
 
 Here is the app preview:
 ![app_img.png](app_img.png)
+## TODO:
 
-TODO:
-
-[x] a lot were done here...
-[] make individual item search to find matched items from trade and display it properly based on current resist
-[] make find gear to be working
+- [x] a lot were done here...
+- [ ] make individual item search to find matched items from trade and display it properly based on current resist
+- [ ] make find gear to be working
 
 ...
 

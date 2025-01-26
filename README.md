@@ -1,3 +1,18 @@
+THIS IS AN EXPERIMENTATION PROJECT TO GET FAMILIAR WITH CURSOR AI!
+
+I did not care about code quality here, but fastest way to provide users value.
+
+Here is the app preview:
+![app_img.png](app_img.png)
+
+TODO:
+
+[x] a lot were done here...
+[] make individual item search to find matched items from trade and display it properly based on current resist
+[] make find gear to be working
+
+...
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
